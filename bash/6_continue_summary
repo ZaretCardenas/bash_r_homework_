@@ -1,0 +1,18 @@
+#To find different descriptions
+#awk '{s+=$2; ss+=$2^2} END{print m=s/NR, sqrt(ss/NR-m^2)}' ../data_procesada/archivo_final.csv
+
+Echo "mean and ss of edad"
+cat ../data_procesada/archivo_final.csv| \
+sed '1d'| \
+awk -F"," '{s+=$2; ss+=$2^2 ; conteo++} END{print m=s/conteo, sqrt(ss/conteo-m^2)}' 
+
+Echo "mean and ss of hour"
+cat ../data_procesada/archivo_final.csv| \
+sed '1d'| \
+awk -F"," '{s+=$6; ss+=$6^2 ; conteo++} END{print m=s/conteo, sqrt(ss/conteo-m^2)}' 
+
+Echo "mean and ss of hour"
+cat ../data_procesada/archivo_final.csv| \
+sed '1d'| \
+awk -F"," '{s+=$9; ss+=$9^2 ; conteo++} END{print m=s/conteo, sqrt(ss/conteo-m^2)}' 
+

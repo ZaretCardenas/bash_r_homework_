@@ -1,0 +1,15 @@
+
+$base_url="https://ecobici.cdmx.gob.mx/datos-abiertos/"
+prefix="https://ecobici.cdmx.gob.mx"
+
+wget -O - https://ecobici.cdmx.gob.mx/datos-abiertos/ | \
+grep -Eo 'a href="/wp-content/uploads/2023/[0-9]{2}/(ecobici_)?[0-9]{4}(_|-)[0-9]{2}.csv"' | \
+sed 's/a href="//;s/"$//' > links1.txt;
+awk -v myprefix="${prefix//\\/\\\\}" '{ print myprefix $0 }'  links1.txt> links1.txt;
+
+
+
+
+
+
+

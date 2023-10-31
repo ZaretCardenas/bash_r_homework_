@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+directory="data"
+cd "$directory" || exit
+
+output_file="../headers.txt"
+
+for f in *.csv; do
+   bname=`basename $f`
+   pref=${bname%%.csv}
+   echo $pref
+   header=$(awk -F'\t' '{print f, "header:" ORS $0; exit}') $f >> $output_file  # detect header row in file and store in header and write to output
+    
+   awk -F'\t' '{print f, "header:" ORS $0; exit}') $f >> $output_file  # detect header row in file and store in header and write to output
+
+       if [[ $header == "12" ]]; then   # display results
+          echo "file has expected number of fields"   # file is validated for headers
+      else
+          echo "file is missing header for:"  # missing header field ...in file not-validated
+          echo "$header"
+      fi  # close if.... else    
+done >> ${pref}_output
+
+awk -F'\t' '{print pref, "fields detected in file and they are:" ORS $0; exit}' 2020-12.csv >> test.txt

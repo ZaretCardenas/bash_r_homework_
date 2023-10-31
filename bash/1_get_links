@@ -1,0 +1,42 @@
+#fuentes https://stackoverflow.com/questions/1881237/easiest-way-to-extract-the-urls-from-an-html-page-using-sed-or-awk-only
+
+
+
+a=("2022","2023","2021")
+
+until [[ $year = "exit" ]]
+
+do
+
+  read -p "Please type the year you wish download in format YYYY or exit : " year
+
+  if [[ "${a[@]}" =~ $year ]]; then # to check out a list 
+
+      pattern='a href="/wp-content/uploads/2023/[0-9]{2}/(ecobici_)?[0-9]{4}(_|-)[0-9]{2}.csv"'
+    
+     
+     $base_url="https://ecobici.cdmx.gob.mx/datos-abiertos/"
+     wget -O - https://ecobici.cdmx.gob.mx/datos-abiertos/ | \
+     # sustituiye todos los 2023 por la variable year y lo usa como regex 
+     # para encontrar todos los links que contienen el año especico
+     grep -Eo "${pattern/2023/$year}" | \
+      # sustituiye el string "a href" por vacio 
+     sed 's/a href="//;s/"$//'|  awk '$0="https://ecobici.cdmx.gob.mx"$0' > ../aux_info/links.txt
+
+
+    
+
+  else
+    echo "No valid year"
+  fi
+
+done
+
+echo "Links download"
+
+
+
+
+
+
+

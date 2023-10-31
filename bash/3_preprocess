@@ -1,0 +1,10 @@
+
+
+mkdir -p ../data_procesada
+nombre=../data_procesada/archivo_final.csv
+head -1 ../data/ecobici_2023_01.csv
+for f in ../data/ecobici*.csv
+do 
+   #Prints the contents of file.txt; excluding the first line; to the standard output
+   cat $f| sed '1d' >> $nombre
+done

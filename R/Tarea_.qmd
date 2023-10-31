@@ -1,0 +1,121 @@
+---
+title: "Tarea_1"
+format: pdf
+editor: visual
+---
+
+```{r}
+
+library(dplyr)
+library(lubridate)
+
+data <- read.csv('../data_procesada/archivo_final_hour2.csv',head=FALSE)
+names(data)<-c("Genero_Usuario","Edad_Usuario","Bici","Ciclo_Estacion_Retiro",
+               "Fecha_Retiro","Hora_only_retiro","Hora_Retiro","Ciclo_EstacionArribo"
+               ,"Fecha_Arribo","Hora_only_arribo","Hora_Arribo")
+
+data<- data%>% 
+    mutate(
+        arrival_date_f = strptime(paste(Fecha_Arribo, Hora_Arribo), "%d/%m/%Y %H:%M:%S"),
+        departure_date_f = strptime(paste(Fecha_Retiro, Hora_Retiro), "%d/%m/%Y %H:%M:%S")
+    )
+
+```
+
+1.  ¿Cuál es el tiempo promedio de recorrido?
+
+    ```{r}
+    q1<-data%>%mutate(duration=difftime(arrival_date_f, departure_date_f, units = "mins"),
+                  )%>%summarise(mean_time=mean(duration))
+    print(q1)
+    ```
+
+```{=html}
+<!-- -->
+```
+1.  ¿Cuál es el tiempo promedio de recorrido por sexo?
+
+    ```{r}
+
+    data%>%mutate(duration =difftime(arrival_date_f, departure_date_f, units = "mins"))%>%group_by(Genero_Usuario)%>%summarise(mean_time=mean(duration))
+
+
+    ```
+
+2.  ¿Cuál es el tiempo promedio de recorrido por hora? (responder con una gráfica)
+
+    ```{r}
+    data%>%mutate(duration =difftime(arrival_date_f, departure_date_f, units = "mins"))%>%group_by(Hora_only_retiro)%>%summarise(mean_time=mean(duration))
+
+    ```
+
+3.  ¿Cómo es la distribución de recorridos por día de la semana? (conteo por día)
+
+    ```{r}
+
+    resumen_wd<- data%>%
+        mutate(weekday =weekdays( as.Date(data$Fecha_Retiro, format = "%d/%m/%Y") ))%>%
+        group_by(weekday)%>%summarise("conteo"=n())
+
+    resumen_wd
+    ```
+
+4.  ¿Cuáles son los recorridos más comunes y cómo se distribuye la frecuencia (or-dest)?
+
+    ```{r}
+
+    data%>%group_by(Ciclo_Estacion_Retiro,Ciclo_EstacionArribo)%>%summarise("conteo"=n())
+
+    ```
+
+    5 preguntas exta
+
+5.  ¿Cómo es la distribución de recorridos por día de la semana? (duracion media por día)
+
+    ```{r}
+    resumen_wd<- data%>%
+        mutate(weekday =weekdays( as.Date(data$Fecha_Retiro, format = "%d/%m/%Y")),duration =difftime(arrival_date_f, departure_date_f, units = "mins"))%>%
+        group_by(weekday)%>%summarise('duracion'=mean(duration))
+
+    resumen_wd
+    ```
+
+6.  Cual es la maxima duracion
+
+    ```{r}
+    resumen_wd<- data%>%
+        mutate(weekday =weekdays( as.Date(data$Fecha_Retiro, format = "%d/%m/%Y")),duration =difftime(arrival_date_f, departure_date_f, units = "mins"))%>%summarise('duracion'=max(duration))
+
+    resumen_wd
+    ```
+
+7.  cual es la ruta con la mayoría de viajes
+
+    ```{r}
+    rutas=data%>%group_by(Ciclo_Estacion_Retiro,Ciclo_EstacionArribo)%>%summarise("conteo"=n())
+    rutas
+
+
+    ```
+
+8.  cual es la edad promedio por dia de la semana
+
+    ```{r}
+    resumen_wd<- data%>%
+        mutate(weekday =weekdays( as.Date(data$Fecha_Retiro, format = "%d/%m/%Y")),
+              Edad_Usuario= as.numeric(Edad_Usuario))%>%filter(!is.na(Edad_Usuario))%>%
+        group_by(weekday)%>%summarise('edad'=mean(as.numeric(Edad_Usuario)))
+
+    resumen_wd
+    ```
+
+9.  cual es la edad promedio por hora
+
+    ```{r}
+    resumen_wd<- data%>%
+        mutate(weekday =weekdays( as.Date(data$Fecha_Retiro, format = "%d/%m/%Y")),
+              Edad_Usuario= as.numeric(Edad_Usuario))%>%filter(!is.na(Edad_Usuario))%>%
+        group_by(Hora_only_retiro)%>%summarise('edad'=mean(as.numeric(Edad_Usuario)))
+
+    resumen_wd
+    ```
